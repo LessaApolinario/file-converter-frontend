@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+
+/* @theme {
+} */
+
+* {
+  font-family: 'Merriweather', serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
