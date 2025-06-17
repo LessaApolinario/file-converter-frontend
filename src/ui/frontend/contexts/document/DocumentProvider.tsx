@@ -8,6 +8,7 @@ import {
 } from 'react'
 import {
   DocumentCTX,
+  type DownloadFileOptions,
   type FileConverterHandler,
   type FileConverterOption,
 } from '.'
@@ -38,6 +39,22 @@ export function DocumentProvider({
     ]
   }, [])
 
+  const downloadFile = useCallback(
+    ({ type, convertedFile, from, to }: DownloadFileOptions) => {
+      if (downloadFileRef.current && file) {
+        const blob = new Blob([convertedFile], { type })
+        const url = window.URL.createObjectURL(blob)
+
+        downloadFileRef.current.href = url
+        downloadFileRef.current.download = file.name.replace(from, to)
+        downloadFileRef.current.click()
+
+        window.URL.revokeObjectURL(url)
+      }
+    },
+    [file]
+  )
+
   const convertDocxFileToPdf = useCallback(async () => {
     try {
       if (!file) {
@@ -46,29 +63,35 @@ export function DocumentProvider({
 
       const convertedFile = await useCase.convertDocxToPdf(file)
 
-      if (downloadFileRef.current) {
-        const blob = new Blob([convertedFile], { type: 'application/pdf' })
-        const url = window.URL.createObjectURL(blob)
-
-        downloadFileRef.current.href = url
-        downloadFileRef.current.download = file.name.replace('.docx', '.pdf')
-        downloadFileRef.current.click()
-
-        window.URL.revokeObjectURL(url)
-      }
+      downloadFile({
+        type: 'application/pdf',
+        convertedFile,
+        from: '.docx',
+        to: '.pdf',
+      })
     } catch (error) {
       console.error(error)
     }
-  }, [file, useCase])
+  }, [file, useCase, downloadFile])
 
   const convertCsvFileToXls = useCallback(async () => {
-    if (!file) {
-      return
-    }
+    try {
+      if (!file) {
+        return
+      }
 
-    const convertedFile = await useCase.convertCsvToXls(file)
-    console.log('convertCsvFileToXls -> convertedFile: ', convertedFile)
-  }, [file, useCase])
+      const convertedFile = await useCase.convertCsvToXls(file)
+
+      downloadFile({
+        type: 'text/csv',
+        convertedFile,
+        from: '.csv',
+        to: '.xls',
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }, [file, useCase, downloadFile])
 
   const handleConvertFile = useCallback(async () => {
     try {

@@ -6,6 +6,13 @@ export interface FileConverterOption {
   text: string
 }
 
+export interface DownloadFileOptions {
+  type: string
+  convertedFile: File
+  from: string
+  to: string
+}
+
 export type FileConverterHandler = () => Promise<void>
 
 export interface DocumentProps {

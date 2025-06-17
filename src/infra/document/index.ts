@@ -16,8 +16,21 @@ export class DocumentAPI extends BaseAPI implements DocumentAdapter {
     return response.data
   }
 
-  async convertCsvToXls(fileBuffer: File): Promise<File> {
-    // TODO:: implement me
-    return fileBuffer
+  async convertCsvToXls(file: File): Promise<File> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await this.client.post(
+      '/spreadsheet/csv-to-xls',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        responseType: 'blob',
+      }
+    )
+
+    return response.data
   }
 }

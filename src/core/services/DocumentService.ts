@@ -12,7 +12,7 @@ export class DocumentService implements DocumentUseCase {
     return this.adapter.convertDocxToPdf(file)
   }
 
-  convertCsvToXls(fileBuffer: File): Promise<File> {
-    return this.adapter.convertCsvToXls(fileBuffer)
+  convertCsvToXls(file: File): Promise<File> {
+    return this.adapter.convertCsvToXls(file)
   }
 }
