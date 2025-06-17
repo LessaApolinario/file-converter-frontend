@@ -1,11 +1,13 @@
 import { RouterProvider } from 'react-router-dom'
 import { router } from '../routes/router'
+import { DocumentProvider } from '../contexts/document/DocumentProvider'
+import { ViteDIContainer } from '../dicontainer/ViteDIContainer'
 
 function App() {
   return (
-    <div>
+    <DocumentProvider useCase={ViteDIContainer.getDocumentUseCase()}>
       <RouterProvider router={router} />
-    </div>
+    </DocumentProvider>
   )
 }
 
